@@ -1,0 +1,13 @@
+<div id="progress" class="progress form-container-sm" style="border-bottom: 1px dashed black; margin: auto;">
+	{for node in nodes}
+	<a href"#" onclick="progressNodeClick(this, node); return false;">
+		<div class="node">
+			<span class="label">{node}</span>
+			<span class="title">{nodes[node]}</span>
+		</div>
+	</a>
+	<span class="bar"></span>
+	{/for}
+</div>
+
+<script src="../scripts/progress.js"></script>

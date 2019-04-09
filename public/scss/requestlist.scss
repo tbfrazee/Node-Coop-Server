@@ -1,0 +1,59 @@
+@import '_coop';
+
+$labelBackgroundColor: rgb(255, 182, 60);
+$trBackgroundColor: rgb(255, 255, 255);
+$trAltColor: darken($trBackgroundColor, 10%);
+$trHoverColor: darken($trBackgroundColor, 20%);
+
+#reqTableContainer {
+    background-color: $trBackgroundColor;
+    border: 2px solid black;
+    margin: 10% 0 10% 0;
+}
+
+#reqListNav {
+    li, a {
+        padding: .75rem;
+        &.label {
+            background-color: antiquewhite;
+        }
+    }
+}
+
+#requestTable {
+    margin: 0;
+    text-align: center;
+
+    thead tr {
+        background-color:$labelBackgroundColor;
+    }
+
+    tbody tr {
+        &.request-row {
+            background-color: $trBackgroundColor;
+            &.alt {
+                background-color: $trAltColor;
+            }
+            &:hover {
+                background-color: $trHoverColor;
+            }
+        }
+        &.uninit-row {
+            background-color: yellow;
+        }
+        &.empty-row {
+            background-color: orange;
+        }
+        &.error-row {
+            background-color: tomato;
+        }
+    }
+}
+
+.list-group-item-action:hover {
+    background-color: rgb(220, 220, 220);
+}
+
+.selected-row {
+    background-color: $headerColor !important;
+}

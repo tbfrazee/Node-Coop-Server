@@ -1,0 +1,42 @@
+@import '_coop';
+@import '_progress';
+@import '_form';
+
+
+fieldset span.section-label {
+	position: relative;
+}
+
+fieldset span.section-label::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	border-bottom: 1px solid darkgray;
+	height: 1em;
+}
+
+.btn-coll {
+	margin: 10px 0 10px 0;
+}
+
+.btn-coll::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	border-bottom: 3px solid darkgray;
+	height: 100%;
+}
+
+.btn-coll-label {
+	float: left;
+	font-weight: bold;
+}
+
+.btn-coll-action {
+	float: right;
+	font-style: italic;
+}

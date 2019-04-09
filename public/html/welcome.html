@@ -1,0 +1,236 @@
+﻿<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+		<!-- Custom CSS -->
+		<link rel="stylesheet" href="../css/welcome.css">
+		
+		<title>{siteShortName} - Login</title>
+	</head>
+    <body>
+        <script src="../scripts/fbsdk.js"></script>
+
+        <div class="container h-100">
+            <div class="row h-100 justify-content-center align-items-center">
+                <div class="col">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-md-auto align-self-center">
+                            <h3 class="outline-text">Welcome to {sitePrettyName}!</h3>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-auto align-self-center">
+                            <p class="outline-text">Please log in with Facebook to continue. You must be a member of the {fbGroupName} Facebook group.</p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-auto align-self-center">
+
+                            <div class="fb-login-button" onlogin="handleLogin();" data-scope="email,groups_access_member_info,publish_to_groups" data-width="500" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+
+                        </div>
+                    </div>
+                    <!-- DEBUG 
+                    <div class="row">
+                        <div class="col">
+                            <button data-toggle="modal" data-target="#newUserModal" data-backdrop="static">Show New User Modal</button>
+                            <button data-toggle="modal" data-target="#newFamilyModal" data-backdrop="static">Show New Family Modal</button>
+                            <button data-toggle="modal" data-target="#waitModal" data-backdrop="static" onclick="timedProgressBar($('#progress').get(), 2, true, 'waitModal');">Show wait modal</button>
+                        </div>
+                    </div>
+                    <---->
+                </div>
+            </div>
+        </div>
+
+        <!-- New User Modal -->
+        <div class="modal fade" id="newUserModal" tabindex="-1" role="dialog" aria-labelledby="newUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newUserModalLabel">Welcome!</h5>
+                        <button type="button" class="close" data-dismiss="modal" data-target="#newUserModal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <h4 class="text-center">Since this is the first time you've logged in, we need to get a little information from you.</h4>
+                                    <p class="text-center">This information is used to build your profile and will be shared with other members.</p>
+                                    <p class="text-center"><label class="required"></label> = Required field</p>
+                                    <hr />
+                                    {>newuserform.partial}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Contact Modal -->
+        <div class="modal fade" id="noContactModal" tabindex="-1" role="dialog" aria-labelledby="noContactModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="noContactModalLabel">No Contact Preference</h5>
+                        <button type="button" class="close" data-dismiss="modal" data-target="#noContactModal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container text-center">
+                            <div class="row">
+                                <div class="col">
+                                    <h4>You haven't selected a contact preference</h4>
+                                    <p>You won't be notified when your input is needed to fulfill a request.</p>
+                                    <p>Are you sure you want to continue?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#noContactModal">Review Contact Prefereces</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#noContactModal" onclick="loginUserForm(true);">Continue Anyway</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Family Modal -->
+        <div class="modal fade" id="newFamilyModal" tabindex="-1" role="dialog" aria-labelledby="newFamilyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <form class="needs-validation" action="javascript:void(0);" onsubmit="submitNewFamilyForm();" id="newFamilyForm" novalidate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="newFamilyModalLabel">Welcome!</h5>
+                            <button type="button" class="close" data-dismiss="modal" data-target="#newFamilyModal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="text-center">
+                                            <h4>Great! We'll need a little more info to make your family profile.</h4>
+                                            <p>Tell us about your family and household. This information will help other members learn about your home environment.</p>
+                                            <p>Your other family members won't have to fill out this form again. Any member of your family can edit this information at any time from the main menu.</p>
+                                        </div>
+                                        {>familyform.partial}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-success" onclick="loginFamilyForm();">Submit</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#newFamilyModal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Family Help Modal -->
+        <div class="modal fade" id="familyHelpModal" tabindex="-1" role="dialog" aria-labelledby="familyHelpModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="familyHelpModalLabel"><b>Help:</b> Families on the Littlists' Babysitting Co-Op Site</h5>
+                        <button type="button" class="close" data-dismiss="modal" data-target="#familyHelpModal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container text-center">
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Users are each assigned to a family so that you can share child profiles!</h4>
+                                    <p>If you're the first member of your family to sign up on this site, click "Create A New Family" to create a brand new family profile. You'll need to enter information about your kid(s) to get started.</p>
+                                    <p>If one or more of your family members have already signed up, select one of their names from the list and click "Join Family." You'll be added to that person's family, use the child profiles they've already created, and be able to create, edit, and fulfill requests on the family's behalf.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#familyHelpModal">Got It!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Error Modal -->
+        <div class="modal fade" id="loginErrorModal" tabindex="-1" role="dialog" aria-labelledby="loginErrorModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginErrorModalLabel">Login Error</h5>
+                        <button type="button" class="close" data-dismiss="modal" data-target="#loginErrorModal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container text-center">
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Login Unsuccessful</h4>
+                                    <p>There was an error logging in.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#loginErrorModal">Aw shucks.</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Please Wait Modal -->
+        <div class="modal fade" id="waitModal" tabindex="-1" role="dialog" aria-labelledby="waitModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="waitModalLabel">Please Stand By...</h5>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container" id="progress">
+                            <div class="row">
+                                <div class="col progress-outer">
+                                    <div class="progress-inner"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col progress-ctr"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {>errorModal.partial}
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+        <script src="../scripts/coop.js"></script>
+        <script src="../scripts/progress.js"></script>
+        <script src="../scripts/welcome.js"></script>
+
+    </body>
+</html>

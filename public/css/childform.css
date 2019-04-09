@@ -1,0 +1,9 @@
+.btn-coll-label {
+	float: left;
+	font-weight: bold;
+}
+
+.btn-coll-action {
+	float: right;
+	font-style: italic;
+}

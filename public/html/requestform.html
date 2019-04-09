@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+		<!-- Custom CSS -->
+		<link rel="stylesheet" href="../css/coop.css">
+		<link rel="stylesheet" href="../css/requestdetail.css">
+		
+		<title>{siteShortName} - Request</title>
+	</head>
+	
+	<body>
+	
+		<div class="container h-100" style="width:90%">
+			<div class="row align-items-center h-100">
+				<div class="col">
+					<form class="needs-validation" action="/submitRequest" method="POST" onsubmit="return validateForm();" novalidate>
+						<div class="row h-100 rounded-border" style="background-color: rgba(200,200,200,0.3); padding: 20px;">
+							
+							<div class="col-sm">
+								<div class="form-group">
+									<label for="requestedBy">Requester</label>
+									<input class="form-control" type="text" id="requestedByName" value="Asshole McAssholeson" readonly>
+									<input type="hidden" name="requestedBy" id="requestedBy" required>
+								</div>
+								<div class="form-group">
+									<label for="start">Babysit Start Time</label>
+									<input class="form-control" type="datetime-local" id="startTime" name="startTime" onchange="updateDuration()" required>
+									<div class="invalid-feedback">A start date and time is required</div>
+								</div>
+								<div class="form-group">
+									<label for="end">Babysit End Time</label>
+									<input class="form-control" type="datetime-local" id="endTime" name="endTime" onchange="updateDuration()" required>
+									<div class="invalid-feedback">An end date and time is required</div>
+								</div>
+								<div>
+									Duration: <b><span id="Duration"></span></b>
+								</div>
+								<div class="form-group">
+									<label for="children">Which kid(s)? (Ctrl + click to select multiple)</label>
+									<select multiple class="form-control" id="children" name="children" required>
+										<option value="kid1" selected>Little Baby Bobby</option>
+										<option value="kid2">Big Baby Louie</option>
+									</select>
+									<div class="invalid-feedback">At least one child must be selected</div>
+								</div>
+							</div>
+							<div class="col-sm">
+								<div class="form-group">
+									<label for="instructions">Tell us about this request</label>
+									<textarea class="form-control" rows="6" id="comment" name="comment"></textarea>
+								</div>
+								<hr />
+								<div class="row">
+									<div class="col">
+										<span class="button-span">
+											<button type="button" class="btn btn-secondary btn-block" id="assignedButton" data-toggle="modal" data-target="#assignModal">Babysitter Not Assigned</button>
+											<button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#assignHelpModal">?</button>
+										</span>
+										<input type="hidden" id="assignedTo" name="assignedTo">
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col">
+										<span class="button-span">
+											<button type="button" class="btn btn-secondary btn-block" id="fulfilledButton" data-toggle="modal" data-target="#fulfillModal" onclick="prefillFulfillDates()">Babysit Not Fulfilled</button>
+											<button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#fulfillHelpModal">?</button>
+										<span>
+										<input type="hidden" id="fulfilledStart" name="fulfilledStart">
+										<input type="hidden" id="fulfilledEnd" name="fulfilledEnd">
+									</div>
+								</div>
+								<br />
+								<div class="row">
+									<div class="col justify-content-center">
+										<span class="button-span"><input type="submit" class="btn btn-primary btn-block" id="submitButton" value="Submit Request"><!--Submit Request</button>--></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Assign Modal -->
+		<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="assignModalLabel">Pre-Assign This Babysit</h5>
+						<button type="button" class="close" data-dismiss="modal" data-target="#assignModal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container text-center">
+							<div class="row">
+								<div class="col">
+									<h4>Who is going to do this babysit?</h4>
+									<select id="assignSelect" onchange="assignSelectChange(this);">
+										<option value="None">Nobody :( </option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-around">
+						<button type="button" class="btn btn-dark" id="assignSubmitButton" onclick="submitAssign($('#assignSelect')[0]);">Assign Nobody</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#assignModal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Assign Help Modal -->
+		<div class="modal fade" id="assignHelpModal" tabindex="-1" role="dialog" aria-labelledby="assignHelpModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="assignHelpModalLabel"><b>Help:</b> Pre-Assigning a Babysit</h5>
+						<button type="button" class="close" data-dismiss="modal" data-target="#assignHelpModal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container text-center">
+							<div class="row">
+								<div class="col">
+									<h4>Click this button if you already know who is going to do this babysit.</h4>
+									<p>If you already know who is going to do this babysit, you can select their name here. The request will be automatically assigned and the person you select will be informed.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-around">
+						<button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#assignHelpModal">Got it!</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Fulfill Modal -->
+		<div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="fulfillModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="fulfillModalLabel">Fulfill This Babysit</h5>
+						<button type="button" class="close" data-dismiss="modal" data-target="#fulfillModal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container text-center">
+							<div class="row">
+								<div class="col">
+									<div class="form-group">
+										<h4>Who did this babysit?</h4>
+										<select id="fulfillSelect" onchange="fulfillSelectChange(this);">
+											<option value="None">Nobody :(</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<h4>How long did it last?</h4>
+									<div class="row">
+										<div class="col">
+											<label for="fulFillStartTime">Start Time</label>
+											<input class="form-control" type="datetime-local" id="fulfillStartTime" onchange="updateDuration("fulfill");">
+										</div>
+										<div class="col">
+											<label for="fulfillEndTime">End Time</label>
+											<input class="form-control" type="datetime-local" id="fulfillEndTime" onchange="updateDuration("fulfill");">
+										</div>
+									</div>
+								</div>
+							</div>
+							<br />
+							<div class="row">
+								<div class="col justify-content-center">
+									Duration: <span id="fulfillDuration"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-around">
+						<button type="button" class="btn btn-dark" id="fulfillSubmitButton" onclick="submitFulfill($('#fulfillSelect')[0], $('#fulfillStartTime).value, $('fulfillEndTime').value);">Submit</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#fulfillModal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Fulfill Help Modal -->
+		<div class="modal fade" id="fulfillHelpModal" tabindex="-1" role="dialog" aria-labelledby="fulfillHelpModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="fulfillHelpModalLabel"><b>Help:</b> Marking a Babysit as Fulfilled</h5>
+						<button type="button" class="close" data-dismiss="modal" data-target="#fulfillHelpModal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="container text-center">
+							<div class="row">
+								<div class="col">
+									<h4>Click this button if this babysit has already happened.</h4>
+									<p>If this request has already been fulfilled, you can enter the fulfillment information here. The request will be put into fulfillment automatically and the person you choose will be contacted to confirm the babysit's duration.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-around">
+						<button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#fulfillHelpModal">Got it!</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+		<!-- Javascript -->
+		<script type="text/javascript" src="../scripts/requestdetail.js"></script>
+		<script type="text/javascript" src="../scripts/coop.js"></script>
+		
+	</body>
+</html>

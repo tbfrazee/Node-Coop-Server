@@ -1,0 +1,64 @@
+.progress {
+  width: 500px;
+  height: 100px;
+  max-width: 100%;
+  margin: auto;
+  text-align: center;
+  background-color: #fff;
+  transition: width 1s; }
+  .progress .node, .progress .bar {
+    display: inline-block;
+    background: #progress-bg;
+    border: 1px solid #d5d5da; }
+  .progress .bar {
+    position: relative;
+    height: 6px;
+    width: 113.33333px;
+    top: 17px;
+    margin-left: -5px;
+    margin-right: -5px;
+    border-left: none;
+    border-right: none; }
+  .progress .node {
+    height: 40px;
+    width: 40px;
+    border-radius: 40px; }
+    .progress .node .label {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      color: #5b5b5a;
+      line-height: 32px;
+      border-radius: 32px;
+      margin-top: 3px;
+      font-size: 17px; }
+    .progress .node .title {
+      font-size: 13px;
+      line-height: 30px;
+      color: #5b5b5a;
+      width: 40px; }
+  .progress .node.done, .progress .bar.done {
+    background-color: #81f65c; }
+  .progress .node.active {
+    background-color: #82bfeb; }
+    .progress .node.active .label {
+      background-color: #1d77b7;
+      color: white; }
+    .progress .node.active .title {
+      color: black; }
+  .progress .node.done .label {
+    background-color: #31af0a;
+    color: white; }
+  .progress .node.done .titie {
+    color: black; }
+  .progress .node.invalid {
+    background-color: #f2abab; }
+    .progress .node.invalid .label {
+      background-color: #dd2727;
+      color: white; }
+    .progress .node.invalid .title {
+      color: black; }
+  .progress .bar.pre-active {
+    background: linear-gradient(to right, #ccfbbd, #daecf9); }
+  .progress .bar.post-active {
+    background: linear-gradient(to right, #daecf9, #fff); }

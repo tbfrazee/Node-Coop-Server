@@ -1,0 +1,106 @@
+<form id="userForm" class="needs-validation" name="userForm" onsubmit="submitUserForm(); return false;" novalidate>
+	<fieldset id="userFormField" {if userform.isViewMode}disabled{/if}>
+		{if not userform.hideFamilySelect}
+        {>familyselect.partial}
+        <hr />
+        {/if}
+		<fieldset class="form-group">
+			<label class="form-label required" for="email">Email</label>
+			<input type="email" class="form-control" name="email" id="email" autocomplete="email" pattern="\w+@\w+\.\w+" required>
+			<div class="invalid-feedback">Email is required. We won't send you anything unless you ask us to. <a href="/privacy">Privacy Policy</a></div>
+			<label class="form-label required" for="phone">Cell Phone Number</label>
+			<input type="text" class="form-control" name="phone" id="phone" autocomplete="tel" required>
+			<div class="invalid-feedback">Cell phone number is required, in case your babysitter needs to contact you.</div>
+			<label class="form-label required" for="phoneCarrier">Cell Phone Provider</label>
+			<select class="form-control" name="phoneCarrier" id="phoneCarrier" onchange="phoneCarrierSelect(this)" required>
+				<option value="" disabled selected hidden>Select Provider</option>
+				<option value="att">AT&T</option>
+				<option value="boost">Boost Mobile</option>
+				<option value="consumer">Consumer Cellular</option>
+				<option value="cricket">Cricket Wireless</option>
+				<option value="cSpire">C-Spire</option>
+				<option value="google">Google Project-Fi</option>
+				<option value="metro">Metro PCS</option>
+				<option value="republic">Republic Wireless</option>
+				<option value="sprint">Sprint</option>
+				<option value="ting">Ting</option>
+				<option value="tmobile">T-Mobile</option>
+				<option value="tracphone">Tracphone</option>
+				<option value="usCellular">US Cellular</option>
+				<option value="verizon">Verizon</option>
+				<option value="virgin">Virgin Mobile</option>
+				<option value="other">Other</option>
+			</select>
+			<div class="invalid-feedback">Required for text messaging. We won't text you unless you ask us to.</div>
+			<div class="row collapse" id="phoneCarrierOtherEC">
+				<div class="col ml-4 mt-2">
+					<label for="phoneCarrierOther">Please enter your carrier's SMS email URL (after the @)</label>
+					<input class="form-control" type="text" id="phoneCarrierOther" name="phoneCarrierOther" value="{userform.phoneCarrierOther}">
+					<div class="invalid-feedback">This field is required</div>
+				</div>
+			</div>
+			<label class="form-label">Select how you'd like to be notified of events</label>
+			<br />
+			<div class="form-check form-check">
+				<input class="form-check-input" type="checkbox" id="contactEmail" name="contactEmail" value="Yes">
+				<label class="form-check-label" for="contactEmail">Email</label>
+			</div>
+			<div class="form-check form-check">
+				<input class="form-check-input" type="checkbox" id="contactText" name="contactText" value="Yes">
+				<label class="form-check-label" for="contactText">Text</label>
+			</div>
+			<div class="form-check form-check">
+				<input class="form-check-input" type="checkbox" id="contactFB" name="contactFB" value="Yes">
+				<label class="form-check-label" for="contactFB">Facebook Notification</label>
+			</div>
+		</fieldset>
+		<hr />
+		<fieldset class="form-group">
+			<label class="form-label required" for="bio">Tell us a little about yourself.</label>
+			<textarea class="form-control" name="bio" id="bio" rows="3" required></textarea>
+			<div class="invalid-feedback">This field is required</div>
+			<br />
+			<label class="form-label required">Do you have a valid baby/child first aid certification?</label>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="firstAid" id="firstAidRadioY" value="Yes" required>
+				<label class="form-check-label" for="firstAidRadioY">Yes</label>
+			</div>
+			<div class="form-check required">
+				<input class="form-check-input" type="radio" name="firstAid" id="firstAidRadioN" value="No" required>
+				<label class="form-check-label" for="firstAidRadioN">No</label>
+			</div>
+			<div class="invalid-feedback">Please select an option</div>
+			<br />
+			<label class="form-label required">Do you have a valid baby/child CPR certification?</label>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="cpr" id="cprRadioY" value="Yes" required>
+				<label class="form-check-label" for="cprY">Yes</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="cpr" id="cprRadioN" value="No" required>
+				<label class="form-check-label" for="cprRadioN">No</label>
+			</div>
+			<div class="invalid-feedback">Please select an option</div>
+			<br />
+			<label class="form-label required">Do you have any other childcare training or experience that you'd like other members to know about?</label>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="training" id="trainingRadioY" value="Yes" onclick="toggleExpField('training', true);" required>
+				<label class="form-check-label" for="trainingY">Yes</label>
+				<div class="row collapse" id="trainingEC">
+					<div class="col">
+						<label class="form-label required" for="trainingExp">Please provide more information</label>
+						<textarea class="form-control form-control-sm" rows="2" id="traningExp" name="trainingExp"></textarea>
+						<div class="invalid-feedback">This field is required</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" name="training" id="trainingRadioN" value="No" onclick="toggleExpField('training', false);" required>
+				<label class="form-check-label" for="trainingRadioN">No</label>
+			</div>
+			<div class="invalid-feedback">Please select an option</div>
+		</fieldset>
+	</fieldset>
+</form>
+
+<script type="text/javascript" src="../scripts/userform.js"></script>

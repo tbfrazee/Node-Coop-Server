@@ -1,0 +1,39 @@
+<div id="newUserForm">
+    <fieldset id="newUserFormField">
+        <div id="progress" class="progress form-container-md">
+            <div style="margin: auto;">
+                <a href="#" onclick="progressNodeClick(0); return false;">
+                    <div class="node active">
+                        <span class="label">1</span>
+                        <span class="title">You</span>
+                    </div>
+                </a>
+                <span class="bar"></span>
+                <a href="#" onclick="progressNodeClick(1); return false;">
+                    <div class="node">
+                        <span class="label">2</span>
+                        <span class="title">Family</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="form-container-md form-part collapse show">
+            {>userform.partial}
+            <hr />
+            <button class="btn btn-secondary" data-dismiss="modal" data-target="#newUserModal">Close</button>
+            <button class="btn btn-primary float-right" onclick="progressNodeClick(1)">Next</button>
+        </div>
+        <div class="form-container-md form-part collapse">
+            <form id="familySelectForm" class="needs-validation" novalidate>
+                {>familyselect.partial}
+            </form>
+            <hr />
+            <div id="familyFormDiv" class="collapse">
+                {>familyform.partial}
+                <hr />
+                <button class="btn btn-secondary" onclick="progressNodeClick(0);">Back</button>
+                <button class="btn btn-primary float-right" onclick="loginNewUserForm();">Next</button>
+            </div>
+        </div>
+    </fieldset>
+</div>

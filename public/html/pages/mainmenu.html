@@ -1,0 +1,107 @@
+﻿<!doctype html>
+<html lang="en">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+		<!-- Custom CSS -->
+		<link rel="stylesheet" href="../css/mainmenu.css">
+		
+		<title>{SitePrettyName}</title>
+	</head>
+	
+    <body>
+        {>header.partial}
+        <div class="content padded">
+            <div class="container-fluid">
+                <div class="row h-100 justify-content-center">
+                    <div class="col align-self-center outline-text text-center outline-text">
+                        <div class="row">
+                            <div class="col">
+                                <h1>Welcome, {userFirstName}!</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p>
+                                    <a href="/requestlist?filter=open">There are currently {openReqs.openReqs} open babysitting requests available.</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p>
+                                    {if nextRequest}
+                                    <a href="/requestdetail?redId={nextRequest.requestId}">{nextAssigned.assignedTo} is scheduled to babysit {nextAssigned.children} at {nextAssigned.startTime}.</a>
+                                    {else}
+                                    You do not currently have anyone scheduled to babysit for you. <a href="/newrequest">Submit a new request to find a babysitter.</a>
+                                    {/if}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p>
+                                    {if nextAssigned}
+                                    <a href="/requestdetail?reqId={nextAssigned.requestId}">You are scheduled to babysit {nextAssigned.children} for {nextAssigned.requestedBy} at {nextAssigned.startTime}.</a>
+                                    {else}
+                                    You are not currently scheduled to do any babysitting. <a href="/requestlist?filter=open">Check out open requests and see if you're available!</a>
+                                    {/if}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p class="outline-text">The {sitePrettyName} has fulfilled {totalHours.totalHours} hours of babysitting so far. Keep it up!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-around text-left" style="margin: 10% 20px 0 20px;">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Get a Babysitter</h5>
+                                <p class="card-text">Do some stuff.</p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Be a Babysitter</h5>
+                                <p class="card-text">Do some stuff.</p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">My Info</h5>
+                                <p class="card-text">Do some stuff.</p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+        <!-- Javascript -->
+        <script type="text/javascript" src="../scripts/coop.js"></script>
+        <script type="text/javascript" src="../scripts/mainmenu.js"></script>
+
+    </body>
+</html>

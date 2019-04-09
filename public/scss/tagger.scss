@@ -1,0 +1,62 @@
+$selected-bg-color: lightgray !default;
+$tag-bg-color: teal !default;
+$tag-txt-color: white !default;
+$tag-close-btn-color: black !default;
+$tag-close-bg-color: black !default;
+$tag-close-txt-color: white !default;
+
+.ac-list-selected {
+    min-height: 40px;
+    vertical-align: middle;
+    background-color: $selected-bg-color;
+
+    .tag {
+        display: inline-block;
+        margin: 0.375rem 0.5rem;
+        padding: 0.375rem 0.5rem;
+        background-color: $tag-bg-color;
+        color: $tag-txt-color;
+        font-size: .8rem;
+        text-align: center;
+        line-height: 1.25;
+        transition: background-color 1s;
+
+        .tag-close {
+            margin-left: 0.5rem;
+            color: $tag-close-btn-color;
+            cursor: pointer;
+        }
+
+        &.del-hover {
+            background-color: $tag-close-bg-color;
+            color: $tag-close-txt-color;
+        }
+    }
+}
+
+.ac-list {
+    text-align: left;
+    position: absolute;
+    list-style: none;
+    padding-left: 0;
+    background-color: white;
+
+    .ac-list-item {
+        border: 1px solid #ced4da;
+        border-radius: .1rem;
+        height: 40px;
+        padding-left: .75rem;
+        vertical-align: middle;
+        line-height: 40px;
+
+        &:hover {
+            background-color: gray;
+            cursor: pointer;
+        }
+
+        &.active {
+            background-color: blue;
+            color: white;
+        }
+    }
+}

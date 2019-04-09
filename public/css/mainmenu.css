@@ -1,0 +1,130 @@
+html {
+  min-height: 100vh; }
+
+body {
+  height: 100%;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url(../img/scbg.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed; }
+
+fieldset.form-fieldset {
+  background-color: #fff; }
+
+label.col-form-label {
+  font-weight: bold; }
+
+label ~ label {
+  margin-top: 1rem; }
+
+#header {
+  background-color: #96c8ff; }
+
+#header .nav-whatever {
+  height: 50px;
+  width: 100%;
+  padding: 0px 5px 0px 5px;
+  transition: background-color linear 0.2s;
+  text-decoration: none; }
+
+.padded {
+  padding: 15px 15px 15px 15px; }
+
+.content.padded {
+  padding: 65px 15px 15px 15px; }
+
+.outline-text {
+  color: white;
+  text-shadow: -2px 0  2px black, 0 2px 2px black, 2px 0 2px black, 0 -2px 2px black; }
+
+.important {
+  color: firebrick; }
+
+hr.double {
+  border-top-width: 4px;
+  border-top-style: double; }
+
+.form-container, .form-container-sm, .form-container-md, .form-container-lg {
+  border: 4px solid black;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 100%;
+  margin: auto; }
+  .form-container .title, .form-container-sm .title, .form-container-md .title, .form-container-lg .title {
+    width: 100%;
+    padding: .75rem;
+    background: linear-gradient(left to right, #96c8ff, rgba(0, 0, 0, 0)); }
+
+.form-container-sm {
+  width: 500px; }
+
+.form-container-md {
+  width: 1000px; }
+
+.form-container-lg {
+  width: 100%; }
+
+.form-part {
+  border-top: none; }
+
+.child-form-container {
+  background-color: white; }
+
+.effect-underline:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  display: inline-block;
+  height: 1em;
+  width: 100%;
+  border-bottom: 1px solid;
+  margin-top: 10px;
+  opacity: 0;
+  -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+  transition: opacity 0.35s, transform 0.35s;
+  -webkit-transform: scale(0, 1);
+  transform: scale(0, 1); }
+
+.underline-parent:hover > .effect-underline:after {
+  opacity: 1;
+  -webkit-transform: scale(1);
+  transform: scale(1); }
+
+.modal {
+  overflow: auto !important; }
+
+.modal-content {
+  background-color: transparent; }
+
+.modal-header {
+  background-color: whitesmoke; }
+
+.help-modal .modal-header, .help-modal .modal-footer {
+  background-color: lightskyblue; }
+
+.error-modal .modal-header, .error-modal .modal-footer {
+  background-color: tomato; }
+
+.modal-body {
+  background-color: rgba(255, 255, 255, 0.9); }
+
+.modal-footer {
+  background-color: whitesmoke; }
+
+.progress-outer {
+  border: 5px solid black;
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 40px;
+  z-index: 2;
+  padding: 0;
+  text-align: center; }
+
+.progress-inner {
+  background: linear-gradient(to right, red, yellow);
+  width: 0%;
+  z-index: 1;
+  height: 100%;
+  text-align: center; }
+
+.progress-ctr {
+  text-align: right; }

@@ -1,0 +1,415 @@
+﻿<div class="container-fluid h-100 content padded">
+	<div class="row align-items-center h-100">
+		<div class="offset-md-1 offset-lg-2 offset-xl-3"></div>
+		<div class="col-sm-12 col-md-10 col-lg-8 col-xl-6">
+			<form class="needs-validation" id="requestForm" action="javascript:void(0)" novalidate>
+				{if isReadOnly}
+				{if requestDetail.isEditable}
+				<button class="btn btn-success btn-block">Edit this request</button>
+				{else}
+				<button class="btn btn-black btn-block" disabled>This request cannot be edited</button>
+				{/if}
+				<br />
+				{/if}
+				<fieldset class="form-container" id="requestFormField" {if isReadOnly}disabled{/if}>
+					<div class="row h-100">
+						<div class="col">
+							<h3>Request a Babysitter</h3>
+							<hr />
+							<fieldset class="form-group">
+								<label class="form-label" for="requestedByName">Requested By</label>
+								<input class="form-control" type="text" id="requestedByName" name="requestedByName" value="{requestDetail.requestedByName}" readonly>
+								<input type="hidden" name="requestedBy" id="requestedBy" value="{requestDetail.requestedBy}" required>
+							</fieldset>
+							<hr />
+							<fieldset class="form-group">
+								<div class="form-row">
+									<div class="col-sm">
+										<label for="start">Babysit Start Time</label>
+										<input class="form-control" type="datetime-local" id="startTime" name="startTime" value="{requestDetail.startTime}" onchange="updateDuration();startTimeSelect()" required>
+										<div class="invalid-feedback">A start date and time is required</div>
+									</div>
+									<div class="col-sm">
+										<label for="end">Babysit End Time</label>
+										<input class="form-control" type="datetime-local" id="endTime" name="endTime" value="{requestDetail.endTime}" onchange="updateDuration();" required>
+										<div class="invalid-feedback">An end date and time is required</div>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset class="form-group">
+								<div>
+									<label for="Duration">Duration: </label><b><span id="Duration"></span></b>
+								</div>
+							</fieldset>
+							<hr />
+							<fieldset class="form-group">
+								<label for="children">Which kid(s)? (Ctrl + click to select multiple)</label>
+								<select multiple class="form-control" id="children" name="children" size="2" required>
+									{for kid in children}
+									<option value="{kid.childId}">{kid.name}</option>
+									{/for}
+								</select>
+								<div class="invalid-feedback">At least one child must be selected</div>
+							</fieldset>
+							<fieldset class="form-group">
+								<label for="instructions">Tell us about this request</label>
+								<textarea class="form-control" rows="4" id="comment" name="comment">{requestDetail.comment}</textarea>
+							</fieldset>
+							<hr />
+							<div class="row">
+								<div class="col-md">
+									<span class="button-span">
+										<button type="button" class="btn btn-secondary btn-block" id="assignedButton" data-toggle="modal" data-target="#assignModal">No Babysitter Assigned</button>
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#assignHelpModal">?</button>
+									</span>
+									<input type="hidden" id="assignedTo" name="assignedTo" value="{requestDetail.assignedTo}">
+								</div>
+								<div class="col-md">
+									<span class="button-span">
+										<button type="button" class="btn btn-secondary btn-block" id="fulfilledButton" data-toggle="modal" data-target="#fulfillModal" onclick="prefillFulfillDates()">Not Yet Completed</button>
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#fulfillHelpModal">?</button>
+									</span>
+									<input type="hidden" id="fulfillStartTime" name="fulfillStartTime" value="{requestDetail.fulfillStartTime}">
+									<input type="hidden" id="fulfillEndTime" name="fulfillEndTime" value="{requestDetail.fulfillEndTime}">
+								</div>
+							</div>
+							<!--<div class="row" style="margin-top: 0.5rem;">
+								<div class="col">
+									<span class="button-span">
+										<button type="button" class="btn btn-secondary btn-block" id="fulfilledButton" data-toggle="modal" data-target="#fulfillModal" onclick="prefillFulfillDates()">Not Yet Completed</button>
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#fulfillHelpModal">?</button>
+									</span>
+									<input type="hidden" id="fulfillStartTime" name="fulfillStartTime" value="{requestDetail.fulfillStartTime}">
+									<input type="hidden" id="fulfillEndTime" name="fulfillEndTime" value="{requestDetail.fulfillEndTime}">
+								</div>
+							</div>-->
+							<br />
+							<div class="row">
+								<div class="col-md">
+									<span class="button-span">
+										<button type="button" class="btn btn-secondary btn-block" id="autoFBPostButton" onclick="autoPostClick()">Automated Facebook Post: Off</button>
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#autoPostHelpModal">?</button>
+									</span>
+									<input type="hidden" id="autoFBPostCheck" name="autoFBPostCheck" value="No">
+								</div>
+								<div class="col-md">
+									<span class="button-span"><button type="button" class="btn btn-primary btn-block" onclick="submitRequest()">Submit Request</button></span>
+								</div>
+							</div>
+							<!--<br />
+							<div class="row">
+								<div class="col">
+									<span class="button-span">
+										<button type="button" class="btn btn-secondary btn-block" id="autoFBPostButton" onclick="autoPostClick()">Automated Facebook Post: Off</button>
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#autoPostHelpModal">?</button>
+									</span>
+									<input type="hidden" id="autoFBPostCheck" name="autoFBPostCheck" value="No">
+								</div>
+							</div>-->
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Assign Modal -->
+<div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="assignModalLabel">Assign a Babysitter</h5>
+				<button type="button" class="close" data-dismiss="modal" data-target="#assignModal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<fieldset {if isReadOnly}disabled{/if}>
+								<h4 class="text-center">Who is going to do this babysit?</h4>
+								<input type="text" placeholder="Enter name(s)" class="form-control" id="assignedInput" />
+							</fieldset>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-around">
+				<button type="button" class="btn btn-dark" id="assignSubmitButton" onclick="submitAssign($('#assignSelect')[0]);">Assign Nobody</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" data-target="#assignModal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Assign Help Modal -->
+<div class="modal fade help-modal" id="assignHelpModal" tabindex="-1" role="dialog" aria-labelledby="assignHelpModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="assignHelpModalLabel"><b>Help:</b> Pre-Assigning a Babysit</h5>
+				<button type="button" class="close" data-dismiss="modal" data-target="#assignHelpModal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="container text-center">
+					<div class="row">
+						<div class="col">
+							<h4>Do you already know who is going to do this babysit?</h4>
+							<p>If so, you can select their name by pressing this button. The request will be automatically assigned and the person you select will be informed.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-around">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#assignHelpModal">Got it!</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Fulfill Modal -->
+<div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="fulfillModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="fulfillModalLabel">Complete This Babysit</h5>
+				<button type="button" class="close fulfill-close-btn" data-dismiss="modal" data-target="#fulfillModal" aria-label="Close" {if isFulfillMode}onclick="redirect('/mainmenu');" {/if}>
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="container">
+					<fieldset {if isReadOnly}{if not isFulfillMode}disabled{/if}{/if}>
+					<div id="fulfillSitter">
+						<div id="fulfillSitterTemplate" class="row form-container">
+							<div class="col">
+								<div class="form-group fulfillSelect">
+									<fieldset {if isReadOnly}disabled{/if}>
+										<h4 class="text-center">Who did this babysit?</h4>
+										<input type="text" placeholder="Enter name(s)" class="form-control" id="fulfilledInput" />
+									</fieldset>
+
+
+
+									<!--
+									<label for="fulfillSelect">Who did this babysit?</label>
+									<select id="fulfillSelect" class="form-control" onchange="fulfillSelectChange(this);">
+										<option value="None">Nobody, yet</option>
+										{for user in users}
+										<option value="{user.id}">{user.name}</option>
+										{/for}
+									</select>
+									-->
+								</div>
+								<div class="form-row">
+									<div class="col form-group fulfillStartTime">
+										<label for="fulfillStartTime">Start Time</label>
+										<input class="form-control" type="datetime-local" id="fulfillStartTime" name="fulfillStartTime" value="{requestDetail.fulfillStart}" onchange="updateDuration(" fulfill");">
+									</div>
+									<div class="col form-group fulfillEndTime">
+										<label for="fulfillEndTime">End Time</label>
+										<input class="form-control" type="datetime-local" id="fulfillEndTime" name="fulfillEndTime" value="{requestDetail.fulfillEnd}" onchange="updateDuration(" fulfill");">
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="col fulfillDuration" id="fulfillDuration">
+										Duration: <span id="fulfillDuration"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="col">
+							<button role="button" class="btn btn-info" onclick="addSitter('fulfillSitter')">Add Another Babysitter</button>
+						</div>
+					</div>
+					<div class="row">
+						<div id="fulfillTotalDuration" class="col">
+							Total Duration: <span></span>
+						</div>
+					</div>
+					</fieldset>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-around">
+				<button type="button" class="btn btn-dark" id="fulfillSubmitButton" onclick="submitFulfillment($('#fulfillSelect')[0], $('#fulfillStartTime).value, $('fulfillEndTime').value);">Submit</button>
+				<button type="button" class="btn btn-secondary fulfill-close-btn" data-dismiss="modal" data-target="#fulfillModal" {if isFulfillMode}onclick="redirect('/mainmenu');" {/if}>Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Fulfill Help Modal -->
+<div class="modal fade help-modal" id="fulfillHelpModal" tabindex="-1" role="dialog" aria-labelledby="fulfillHelpModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="fulfillHelpModalLabel"><b>Help:</b> Marking a Babysit as Fulfilled</h5>
+				<button type="button" class="close" data-dismiss="modal" data-target="#fulfillHelpModal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="container text-center">
+					<div class="row">
+						<div class="col">
+							<h4>Has this babysit has already happened?</h4>
+							<p>If so, you can enter the fulfillment information by pressing this button. The request will be put into fulfillment automatically and the person you choose will be contacted to confirm the babysit's duration.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-around">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#fulfillHelpModal">Got it!</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Auto Post Help Modal -->
+<div class="modal fade help-modal" id="autoPostHelpModal" tabindex="-1" role="dialog" aria-labelledby="autoPostHelpModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="autoPostHelpModalLabel"><b>Help:</b> Auto-Posting to Facebook</h5>
+				<button type="button" class="close" data-dismiss="modal" data-target="#autoPostHelpModal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="container text-center">
+					<div class="row">
+						<div class="col">
+							<h4>Would like us to post this request to Facebook for you?</h4>
+							<p>If so, press this button.</p>
+							<p>A post will be created in the Facebook group on your behalf.  This post will contain the following: <ul style="text-align: left;"><li>A line of text that identifies this as a new request and states the start and end times.</li><li>The contents of the Request Details box from this form.</li><li>A link to the newly-created request on this site.</li></ul></p>
+							<span id="FBPostPreview"></span>
+							<p>If you would like to create your own post, do not press this button.  You will be presented with a Share dialog after you submit your request.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-around">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" data-target="#fulfillHelpModal">Got it!</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="successModalLabel">Success!</h5>
+				<button type="button" class="close" data-dismiss="modal" data-target="#successModal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="container text-center">
+					<div class="row">
+						<div class="col">
+							<h4>Your request has been successfully submitted!</h4>
+							<div id="FBPost" style="margin: 30px 0 30px 0; font-weight: bold; color: blue;">Please wait...</div>
+							<p>What would you like to do next?</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-around">
+				<button type="button" class="btn btn-primary" onclick="window.location.href = '/mainmenu';">Return to Main Menu</button>
+				<button type="button" class="btn btn-success" onclick="window.location.reload();">Submit Another Request</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Fulfillment Mode Modal -->
+<!-- Fulfill Modal -->
+<div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="fulfillModeModal" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="fulfillModeModalLabel">Complete This Babysit</h5>
+			</div>
+			<div class="modal-body">
+				<div class="container text-center">
+					<fieldset>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<h4>Who did this babysit?</h4>
+									<select id="fulfillSelect" onchange="fulfillSelectChange(this); {if isAssignee} disabled{/if}">
+										<option value="None">Nobody, yet</option>
+										{for user in users}
+										<option value="{user.id}">{user.name}</option>
+										{/for}
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<h4>How long did it last?</h4>
+								<div class="form-row">
+									<div class="col">
+										<label for="fulfillStart">Start Time</label>
+										<input class="form-control" type="datetime-local" id="fulfillModalStartTime" name="fulfillModalStartTime" value="{requestDetail.fulfillStart}" onchange="updateDuration(" fulfill");">
+									</div>
+									<div class="col">
+										<label for="fulfillEnd">End Time</label>
+										<input class="form-control" type="datetime-local" id="fulfillModalEndTime" name="fulfillModalEndTime" value="{requestDetail.fulfillEnd}" onchange="updateDuration(" fulfill");">
+									</div>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div class="row">
+							<div class="col justify-content-center">
+								Duration: <span id="fulfillModalDuration"></span>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+			<div class="modal-footer justify-content-around">
+				<button type="button" class="btn btn-dark" id="fulfillSubmitButton" onclick="submitFulfillment($('#fulfillSelect')[0], $('#fulfillStartTime).value, $('fulfillEndTime').value);">Submit</button>
+				<button type="button" class="btn btn-secondary fulfill-close-btn" data-dismiss="modal" data-target="#fulfillModal" {if isFulfillMode}onclick="redirect('/mainmenu');" {/if}>Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Templated Javascript -->
+<script>
+	window.onload = function () {
+		let tagger = new SimpleTagger($("#assignedInput")[0], $("#assignedTo")[0], { values: ["aaaaight", "bbbrrr", "bbbeeeeeees!", "ceeya", "ceeecups"] });
+		{if requestDetail.children}
+			{for kid in requestDetail.children}
+				$('#children').find('option[value={kid}]').attr('selected', true);
+			{/for}
+		{else}
+			$('#children')[0].selectedIndex = 0;
+		{/if}
+		{if requestDetail.assignedTo}
+			$('#assignSelect').find('option[value={requestDetail.assignedTo}]').attr("selected", true);
+			submitAssign($('#assignSelect')[0]);
+		{/if}
+		{if requestDetail.fulfilled}
+			$('#fulfillSelect').find('option[value={requestDetail.assignedTo}]').attr("selected", true);
+			submitFulfill($('#fulfillSelect')[0], $('#fulfillStartTime).value, $('fulfillEndTime').value);
+		{/if}
+		{if isFulfillmentMode}
+			$('#fulfillModal').modal({ backdrop: 'static' });
+			$('.fulfill-close-btn').each((index, el) => { $(el).attr('onclick', 'redirect("/mainmenu");'); });
+			$('#fulfillSubmitButton').attr('onclick', 'submitFulfillment();');
+		{/if}
+	}
+</script>

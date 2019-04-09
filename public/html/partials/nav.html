@@ -1,0 +1,26 @@
+<nav id="header" class="navbar fixed-top navbar-expand-md navbar-light">
+    <a class="navbar-brand" href="/mainmenu">
+        <img src="../img/header_logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        {sitePrettyName}
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#headerNav" aria-controls="headerNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="headerNav">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="/newrequest">Get a Babysitter</a>
+            <a class="nav-item nav-link" href="/requestlist?status=open">Be a Babysitter</a>
+            <div class="nav-item dropdown">
+               <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">View Your Info</a>
+                <div class="dropdown-menu">
+                    <a class="nav-item nav-link" href="/userdetail?id=me">My User Info</a>
+                    <a class="nav-item nav-link" href="/familydetail?id={familyId}">My Family Info</a>
+                    <a class="nav-item nav-link" href="/requestlist?status=open&role=requested&on=family">My Open Requests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-inline">
+        <button type="button" class="btn btn-outline-dark">Logout</button>
+    </form>
+</nav>

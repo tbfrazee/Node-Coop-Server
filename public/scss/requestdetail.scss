@@ -1,0 +1,25 @@
+@import '_coop';
+@import 'tagger';
+
+.button-span {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.fulfill-header {
+    position: fixed;
+    height: 50px;
+    top: 50px;
+    width: 100%;
+    background-color: tomato;
+    display: none;
+}
+
+.modal-body .form-container {
+    border-width: 1px;
+}
+
+#fulfillModalTotalDuration {
+    visibility: hidden;
+}

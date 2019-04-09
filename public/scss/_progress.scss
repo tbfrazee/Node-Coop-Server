@@ -1,0 +1,106 @@
+$bar-width: 500px !default;
+$node-ct: 4 !default;
+$progress-bg: #fff !default;
+$bar-bg: #ddd !default;
+$done-bg: #31af0a !default;
+$active-bg: #1d77b7 !default;
+$error-bg: #dd2727 !default;
+
+.progress {
+	height: 100px;
+	max-width: 100%;
+	margin: auto;
+	text-align: center;
+	background-color: $progress-bg;
+	transition: width 1s;
+    border-bottom: 1px dotted black;
+	
+	.node, .bar {
+		display: inline-block;
+		background: #progress-bg;
+		border: 1px solid #d5d5da;
+	}
+	
+	.bar {
+		position: relative;
+		height: 6px;
+		width: (($bar-width - (40 * $node-ct)) / ($node-ct - 1));
+        bottom: 32px;
+		margin-left: -5px;
+		margin-right: -5px;
+		border-left: none;
+		border-right: none;
+	}
+	
+	.node {
+		height: 40px;
+		width: 40px;
+		border-radius: 40px;
+		
+		.label {
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			color: #5b5b5a;
+			line-height: 32px;
+			border-radius: 32px;
+			margin-top: 3px;
+			font-size: 17px;
+		}
+		
+		.title {
+			font-size: 13px;
+			line-height: 30px;
+			color: #5b5b5a;
+			width: 40px;
+		}
+	}
+	
+	.node.done, .bar.done {
+		background-color: lighten($done-bg, 30%);
+	}
+	
+	.node.active {
+		background-color: lighten($active-bg, 30%);
+		.label {
+			background-color: $active-bg;
+			color: white;
+		}
+		.title {
+			color: black;
+		}
+	}
+	
+	.node.done {
+		.label {
+			background-color: $done-bg;
+			color: white;
+		}
+		.titie {
+			color: black;
+		}
+	}
+	
+	.node.invalid {
+		background-color: lighten($error-bg, 30%);
+		.label {
+			background-color: $error-bg;
+			color: white;
+		}
+		.title {
+			color: black;
+		}
+	}
+	
+	.bar.pre-active {
+		background: linear-gradient(to right, lighten($done-bg, 50%), lighten($active-bg, 50%));
+	}
+	
+	.bar.post-active {
+		background: linear-gradient(to right, lighten($active-bg, 50%), $progress-bg);
+	}
+	
+	
+	
+	
+}

@@ -1,0 +1,182 @@
+<div class="needs-validation" id="childForm" name="childForm">
+	<fieldset id="childFormField" {if isViewMode}disabled{/if}>
+		<div id="progress" class="progress form-container-sm">
+			<a href="#" onclick="progressNodeClick(this, 0); return false;">
+				<div class="node active">
+					<span class="label">1</span>
+					<span class="title">General</span>
+				</div>
+			</a>
+			<span class="bar"></span>
+			<a href="#" onclick="progressNodeClick(this, 1); return false;">
+				<div class="node">
+					<span class="label">2</span>
+					<span class="title">Medical</span>
+				</div>
+			</a>
+			<span class="bar"></span>
+			<a href="#" onclick="progressNodeClick(this, 2); return false;">
+				<div class="node">
+					<span class="label">3</span>
+					<span class="title">Behavior</span>
+				</div>
+			</a>
+			<span class="bar"></span>
+			<a href="#" onclick="progressNodeClick(this, 3); return false;">
+				<div class="node">
+					<span class="label">4</span>
+					<span class="title">Submit</span>
+				</div>
+			</a>
+		</div>
+		<script src="../scripts/progress.js"></script>
+		<div id="general" class="form-container-sm form-part collapse show">
+			<form id="childForm_0" class="needs-validation" novalidate>
+				<fieldset class="form-group">
+					<label class="col-form-label required" for="name">Child's Name</label>
+					<input class="form-control" type="text" id="name" name="name" required>
+					<div>
+						<label class="col-form-label">Gender</label>
+						<div style="margin-left: 10px;">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="gender" id="genderM" value="Male">
+								<label class="form-check-label" for="genderM">Male</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="gender" id="genderF" value="Female">
+								<label class="form-check-label" for="genderF">Female</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="gender" id="genderO" value="Other">
+								<label class="form-check-label" for="genderO">Other</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="gender" id="genderD" value="Decline">
+								<label class="form-check-label" for="genderD">Decline</label>
+							</div>
+						</div>
+					</div>
+					<label class="col-form-label required" for="birthdate">Birthdate</label>
+					<input class="form-control" type="date" id="birthdate" name="birthdate" required>
+				</fieldset>
+			</form>
+			<hr />
+			<button type="button" class="btn btn-secondary" onclick="window.location.href = '/mainmenu';">Back to Main Menu</button>
+			<button type="button" class="btn btn-primary float-right" onclick="nextClick()">Next</button>
+		</div>
+		<div id="medical" class="form-container-md form-part collapse">
+			<form id="childForm_1" class="needs-validation" novalidate>
+				<fieldset class="form-group">
+					<h6><span class="section-label">Doctor's Contact Information</span><a href="#doctorHelp" class="badge badge-info" role="button" style="margin-left: 20px;" data-toggle="collapse">&nbsp;?&nbsp;</a></h6>
+					<div class="alert alert-info collapse" id="doctorHelp">
+						<h6>Doctor Information</h6>
+						<hr />
+						<p>Please provide the contact information for your child's primary care physician.</p>
+						<p>A babysitter may need to contact the child's doctor or may be requested to provide this information by medical personnel.</p>
+						<p>This is <b>not</b> the person a sitter will call in case of emergency.  In case of emergency, your sitter will call 911.</p>
+					</div>
+					<label class="col-form-label required" for="docName">Name</label>
+					<input class="form-control" type="text" id="docName" name="docName" required>
+					<label class="col-form-label required" for="docAddress">Address</label>
+					<input class="form-control" type="text" id="docAddress" name="docAddress" required>
+					<label class="col-form-label required" for="docPhone">Phone Number</label>
+					<input class="form-control" type="tel" id="docPhone" name="docPhone" placeholder="XXX-XXX-XXXX" required>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<h6><span class="section-label">Medical Conditions</span><a href="#medicalConditionsHelp" class="badge badge-info" role="button" style="margin-left: 20px;" data-toggle="collapse">&nbsp;?&nbsp;</a></h6>
+					<div class="alert alert-info collapse" id="medicalConditionsHelp">
+						<h6>Medical Conditions</h6>
+						<hr />
+						<p>List any and all medical conditions (other than allergies, which will be listed below) that your child has, no matter how minor.</p>
+						<p>Click the button to add a new condition. Blank entries will be ignored.</p>
+						<p>For each condition, provide a descriptive, commonly-known name and instructions to handle any symptoms that may occur. Include medications to be used. You'll add more information about these medications in the next section.</p>
+						<p>This, along with allergy information, will be the first place your babysitter looks if your child presents with symptoms.  Please be concise, but include all relevant information to handle a medical situation.</p>
+					</div>
+					<div class="row">
+						<div class="col" id="medicalConditions"></div>
+					</div>
+					<br />
+					<button type="button" class="btn btn-info" onclick="addMedicalCondition();">Add Medical Condition</button>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<h6><span class="section-label">Medications and Supplements</span></h6>
+					<div class="row">
+						<div class="col" id="medication"></div>
+					</div>
+					<br />
+					<button type="button" class="btn btn-info" onclick="addMedication();">Add Medicine or Supplement</button>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<h6><span class="section-label">Food Allergies</span></h6>
+					<div class="row">
+						<div class="col" id="foodAllergies"></div>
+					</div>
+					<br />
+					<button type="button" class="btn btn-info" onclick="addFoodAllergy();">Add Food Allergy</button>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<h6><span class="section-label">Medication Allergies</span></h6>
+					<div class="row">
+						<div class="col" id="medicineAllergies"></div>
+					</div>
+					<br />
+					<button type="button" class="btn btn-info" onclick="addMedicineAllergy();">Add Medicine Allergy</button>
+				</fieldset>
+				<hr />
+				<fieldset class="form-group">
+					<h6><span class="section-label">Other Allergies</span></h6>
+					<div class="row">
+						<div class="col" id="otherAllergies"></div>
+					</div>
+					<br />
+					<button type="button" class="btn btn-info" onclick="addOtherAllergy();">Add Other Allergy</button>
+				</fieldset>
+				<hr />
+				<fieldset class="form-group">
+					<label for="medicalComment">Additional Medical Information or Instructions</label>
+					<textarea class="form-control" rows="5"></textarea>
+				</fieldset>
+			</form>
+			<hr />
+			<button type="button" class="btn btn-secondary" onclick="backClick()">Back</button>
+			<button type="button" class="btn btn-primary float-right" onclick="nextClick()">Next</button>
+		</div>
+		<div id="behavior" class="form-container-md form-part collapse">
+			<form id="childForm_2" class="needs-validation" novalidate>
+				<fieldset class="form-group">
+					<label class="col-form-label" for="behavior">Describe your child's general demeanor and any behavioral issues that may impact a babysit</label>
+					<textarea id="behavior" name="behavior" class="form-control" rows="3"></textarea>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<label class="col-form-label">Mealtime Routine</label>
+					<textarea class="form-control" rows="3"></textarea>
+				</fieldset>
+				<hr />
+				<fieldset>
+					<label class="col-form-label">Bedtime Routine</label>
+					<textarea class="form-control" rows="3"></textarea>
+				</fieldset>
+			</form>
+			<hr />
+			<button type="button" class="btn btn-secondary" onclick="backClick()">Back</button>
+			<button type="button" class="btn btn-primary float-right" onclick="nextClick()">Next</button>
+		</div>
+		<div id="submit" class="form-container-md form-part collapse">
+			<div id="checkPage0">Please wait...</div>
+			<div id="checkPage1">Please wait...</div>
+			<div id="checkPage2">Please wait...</div>
+			<br />
+			<div id="validationResult">Please wait...</div>
+			<hr />
+			<button type="button" class="btn btn-secondary" onclick="backClick()">Back</button>
+			<button id="submitBtn" type="button" class="btn btn-success float-right" onclick="submitChildForm()">Submit!</button>
+		</div>
+	</fieldset>
+</div>
+
+<script type="text/javascript" src="../scripts/childform.js"></script>
