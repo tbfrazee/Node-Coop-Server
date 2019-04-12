@@ -405,9 +405,9 @@ module.exports = {
 			});
 		});
 		
-		for(l = 0; l < lists.length; l++) {
+		for(let l = 0; l < lists.length; l++) {
 			let regex = new RegExp(lists[l] + "(\\D+)(\\d+)");
-			for(f = 0; f < fields.length; f++) {
+			for(let f = 0; f < fields.length; f++) {
 				let match = regex.exec(fields[f], "gi");
 				if(match && match.length == 3) {
 					let subfield = match[1].toLowerCase();
