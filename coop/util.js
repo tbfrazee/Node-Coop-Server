@@ -2,6 +2,11 @@
 const scss = require('node-sass');
 
 module.exports = {
+	
+	//**************
+	// Value lookups
+	//**************
+	
     phoneCarriers: {
         att: "txt.att.net",
         tmobile: "tmomail.net",
@@ -25,12 +30,17 @@ module.exports = {
     months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 	
 	//**************
-	//Functions
+	// Functions
 	//**************
 
 	//Many of these are depricated
 	//Clean up needed
 
+	/**
+	* Exchanges hour balances for users, typically based on a completed request.
+	* @param options 	An object containing either information about the exchange (from, to, amount) or a request
+	* @return 			A Promise that resolves to an integer (number of rows affected) or an error.
+	*/
 	exchangeBalance: function(options) {
 		return new Promise(async (resolve, reject) => {
 			let fromFamily, toFamily, amount;
@@ -59,7 +69,7 @@ module.exports = {
 			}
 
 			try {
-				db.batchUpdate([
+				resolve(db.batchUpdate([
 					{
 						table: "Balances",
 						values: { balance: "balance - " + amount },
@@ -70,14 +80,18 @@ module.exports = {
 						values: { balance: "balance + " + amount },
 						filter: [{ col: "familyId", value: toFamily }]
 					}
-				]);
+				]));
 			} catch (err) {
 				return reject(err);
 			}
 		});
 	},
 
-	/*
+	/**
+	* Calculates balance changes for complex scenarios involving multiple requesters or babysitters.
+	* @param request 	A request object containing all request info.
+	* @return 			An object containing familyId(key)/hourAdjustment(value) pairs.
+	/* **WIP**
 	calculateBalanceChanges: function(request) {
 		let ret = {};
 		
@@ -102,6 +116,11 @@ module.exports = {
 	},
 	*/
 
+	/**
+	* Gets family data from DB based on a list of user IDs
+	* @param userIds 	An array of user IDs that belong to families data is desired for.
+	* @return 			A Promise that resolves to an object of familyId(key)/familyDataObject(value) pairs.
+	*/
 	getFamiliesforUsers: function(userIds) {
 		return new Promise(async (resolve, reject) => {
 			if (!Array.isArray(userIds))
@@ -186,7 +205,13 @@ module.exports = {
 		});
 	},
 
-	/*
+	/**
+	* Sends a user a notification based on their notification preferences.
+	* @param userId 	The user to send the notification to
+	* @param title		The title of the notification email or FBnote
+	* @param message	The content of the notification message
+	* @param url		(Optional) The URL to a request to embed in the message
+	/* **WIP**
 	notifyUser: function(userId, title, message, url) {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -240,6 +265,13 @@ module.exports = {
 		req.renderData.userHours = req.session.hours;
 	},
 
+	/**
+	* Gets all partials necessary to render a page and merges them into the request
+	* @param req		The request object submitted by the user; content will be added to this
+	* @param page		The page being requested
+	* @param partials	An array (or separate arguments) of partials to be included
+	* @return 			true if successful, else an error
+	*/
 	getPageContent: async function(req, page, partials) {
 		if(!req || !page) {
 			return;
@@ -313,6 +345,12 @@ module.exports = {
 		});
 	},
 
+	/**
+	* Shortcut to get a partial as main page content
+	* @param fileName	The filename of the partial
+	* @param req		The request object from the user
+	* @return			A Promise that resolves to partial content or an error
+	*/
 	getPage: function(filename, req) {
 		return getPartial(filename, req, "page");
 	},
@@ -342,30 +380,33 @@ module.exports = {
 	/**
 	 * Takes a request object with form data containing related fields and combines them into an array of objects
 	 * i.e. If req has the following values in it:
-	 *     {List1Name1: 'foo', List1Value1: 5, List1Name2: 'bar', List1Value2: 10}
+	 *     {List1Name0: 'foo', List1Value0: 5, List1Name1: 'bar', List1Value1: 10, List2Name0: 'baz', List2Value0: 9000}
 	 * Then this function will create the following:
-	 *     {List1: [{name: 'foo', value: 5}, {name: 'bar', value: 10}]}
+	 *     {
+	 *			List1: [{name: 'foo', value: 5}, {name: 'bar', value: 10}],
+	 *			List2: [{name: 'baz', value: 9000}]
+	 *		}
 	 * and merge it to the data object.
 	 *
-	 * @param req The request object containing form data in req.body.
-	 * @param data A JSON object containing data to be inserted into DB in the form of {field: value}.
-	 *     Result will be inserted into this object.
-	 * @param listNames An array of strings containing the list names that prefix all field names that are to be combined.
+	 * @param req		The request object containing form data in req.body.
+	 * @param data		A JSON object containing data to be inserted into DB in the form of {field: value}.
+	 *     					Result will be inserted into this object.
+	 * @param listNames	An array of strings containing the list names that prefix all field names that are to be combined.
 	*/
 	parseListFieldInput: function(req, data, listNames) {
 		
 		//Filter down field and list names so that only matching entries are left
-		const lists = [];
-		const fields = req.body.filter(fieldName => {
-			listNames.some(listName => {
+		const fields = [];
+		const lists = listNames.filter(listName => {
+			return !!Object.keys(req.body).filter(fieldName => {
 				if(fieldName.includes(listName)) {
-					return lists.push(listName);
+					return fields.push(fieldName);
 				}
 			});
 		});
 		
 		for(l = 0; l < lists.length; l++) {
-			let regex = new RegExp(lists[l] + "(\D+)(\d+)");
+			let regex = new RegExp(lists[l] + "(\\D+)(\\d+)");
 			for(f = 0; f < fields.length; f++) {
 				let match = regex.exec(fields[f], "gi");
 				if(match && match.length == 3) {
@@ -376,13 +417,18 @@ module.exports = {
 							data[lists[l]] = [];
 						if(!data[lists[l]][index])
 							data[lists[l]][index] = {};
-						data[lists[l]][index][fName] = req.body[field];
+						data[lists[l]][index][subfield] = req.body[fields[f]];
 					}
 				}
 			}
 		}
 	},
 
+	/**
+	* Validates that a list of user IDs exists on the database.
+	* @param ids 	Any number of IDs (or an array of IDs) to check against the DB
+	* @return 		A promise that resolves to true if all IDs validate, else false, or error
+	*/
 	validateUserIds: function(ids) {
 		return new Promise(async (resolve, reject) => {
 			ids = makeArgArray(arguments);
@@ -410,6 +456,11 @@ module.exports = {
 		});
 	},
 
+	/**
+	* Gets data for all families given a list of member user IDs.
+	* @param ids 	A list of user IDs to look up
+	* @return 		A Promise that resolves to an object of familyId(key)/dataObject(value) pairs.
+	*/
 	getFamiliesForUsers: function(ids) {
 		return new Promise(async (resolve, reject) => {
 			ids = makeArgArray(ids);
@@ -437,15 +488,20 @@ module.exports = {
 		});
 	},
 
+	/**
+	* Makes a standard formatted array of arguments, whether provided as individual arguments or an array.
+	* @param arguments 	Any number of arguments or an array of arguments
+	* @return 			An array containing all arguments passed in
+	*/
 	makeArgArray: function() {
 		if(arguments.length == 1) {
 			if(Array.isArray(arguments[0]))
 				return arguments[0];
 			else
 				return [arguments[0]];
-		} else if(arguments.length > 1)
-			return arguments;
-		else
+		} else if(arguments.length > 1) {
+			return Array.prototype.slice.call(arguments);;
+		} else
 			return [];
 	},
 
@@ -453,8 +509,8 @@ module.exports = {
 	 * Gets member IDs, first names, and last names.
 	 * Passing user IDs as arguments will return information for all requested IDs.
 	 * Passing no arguments will retrieve information for all users.
-	 * @param array ids	The user IDs to retrieve information for.
-	 * @return Promise	A Promise that resolves to an array of rows or rejects with an error string.
+	 * @param array ids		The user IDs to retrieve information for.
+	 * @return Promise		A Promise that resolves to an array of rows or rejects with an error string.
 	 */
 	getMemberNames: function() {
 		
@@ -635,6 +691,11 @@ module.exports = {
 		});
 	},
 
+	/**
+	* Gets the filters requested by a user in a format that can be submitted to the DB script.
+	* @param req 	The request object passed by the user.
+	* @return 		An array of objects describing a DB filter that can be passed directly to DB scripts.
+	*/
 	getRequestFilters: function(req) {
 		let filters = [];
 		let statusFilter = ["open", "assigned", "fulfilled", "unfulfilled"].includes(req.query.status) ? req.query.status : "open";
