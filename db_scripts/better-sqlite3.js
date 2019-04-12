@@ -176,9 +176,9 @@ function makeWhereSQL(request) {
 
 function addInsertFields(values, userId) {
     let now = Math.floor(Date.now() / 1000);
-    values.createdBy = userId ? userId : "0";
+    values.createdBy = userId || "0";
     values.created = now;
-    values.modifiedBy = userId ? userId : "0";;
+    values.modifiedBy = userId || "0";;
     values.modified = now;
 }
 
@@ -459,7 +459,7 @@ module.exports = {
             let SQL;
 
             if(!request.filter)
-                return reject("Invalid request: Filter is not defined. If you want to delete all rows, pass an empty object {} as the filter.");
+                return reject("Invalid request: Filter is not defined. If you want to delete all rows, pass an empty object as the filter.");
             else if(!request.table)
                 return reject("Table is required");
             else if(request.filter.keys.length == 0)

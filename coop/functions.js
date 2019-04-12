@@ -13,7 +13,7 @@ function exchangeBalance(options) {
             let familyIds = await getFamiliesforUsers([options.from, options.to]);
             fromFamily = familyIds[options.from];
             toFamily = familyIds[options.to];
-            amount = options.amount ? options.amount : (options.end - options.start);
+            amount = options.amount || (options.end - options.start);
         } else if(options.requestId) {
             try {
                 let reqDetails = db.get({
@@ -50,6 +50,31 @@ function exchangeBalance(options) {
         }
     });
 }
+
+/*
+function calculateBalanceChanges(request) {
+	let ret = {};
+	
+	if(request.requestedBy === null || request.assignedTo === null)
+		return ret;
+	
+	//If request.assignedTo is an array, split duration equally between users
+	let duration;
+	if(Array.isArray(request.assignedTo)) {
+		duration = request.fulfillStartTime - request.fulfillEndTime;
+		let perAssigned = Math.floor(duration / request.assignedTo.length + 1);
+		request.assignedTo.forEach(el => {
+			ret[el] = perAssigned;
+		});
+		ret.[request.requestedBy] = duration * -1;
+	} else if(typeof request.assignedTo === 'object') {
+		duration = 0;
+		request.assignedTo.keys.forEach(el => {
+			request.assignedTo[el]
+		});
+	}
+}
+*/
 
 function getFamiliesforUsers(userIds) {
     return new Promise(async (resolve, reject) => {
@@ -286,6 +311,50 @@ function compileSCSS() {
 			});
 		}
 	});
+}
+
+/**
+ * Takes a request object with form data containing related fields and combines them into an array of objects
+ * i.e. If req has the following values in it:
+ *     {List1Name1: 'foo', List1Value1: 5, List1Name2: 'bar', List1Value2: 10}
+ * Then this function will create the following:
+ *     {List1: [{name: 'foo', value: 5}, {name: 'bar', value: 10}]}
+ * and merge it to the data object.
+ *
+ * @param req The request object containing form data in req.body.
+ * @param data A JSON object containing data to be inserted into DB in the form of {field: value}.
+ *     Result will be inserted into this object.
+ * @param listNames An array of strings containing the list names that prefix all field names that are to be combined.
+*/
+function parseListFieldInput(req, data, listNames) {
+	
+	//Filter down field and list names so that only matching entries are left
+	const lists = [];
+	const fields = req.body.filter(fieldName => {
+		listNames.some(listName => {
+			if(fieldName.includes(listName)) {
+				return lists.push(listName);
+			}
+		}
+	}));
+	
+	for(l = 0; l < lists.length; l++) {
+		let regex = new RegExp(lists[l] + "(\D+)(\d+)");
+		for(f = 0; f < fields.length; f++) {
+			let match = regex.exec(fields[f], "gi");
+			if(match && match.length == 3) {
+				let subfield = match[1].toLowerCase();
+				let index = parseInt(match[2]);
+				if(subfield && index) {
+					if(!data[lists[l]])
+						data[lists[l]] = [];
+					if(!data[lists[l]][index])
+						data[lists[l]][index] = {};
+					data[lists[l]][index][fName] = req.body[field];
+				}
+			}
+		}
+	}
 }
 
 function validateUserIds(ids) {

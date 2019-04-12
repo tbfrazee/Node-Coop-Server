@@ -16,7 +16,6 @@ const helmet = require('helmet');
 const FB = require('fb');
 const whiskers = require('whiskers');
 const scss = require('node-sass');
-const util = require('./coop/functions.js');
 
 //Load configuration file
 const config = require('./config/config.js');
@@ -94,11 +93,11 @@ app.get("/", async (req, res) => {
         util.getPartial('familyform', req),
         util.getPartial('familyselect', req)
     ]).then(
-        function () {
+        function() {
             req.renderData.userform.hideFamilySelect = true;
             res.render('welcome.html', req.renderData);
         },
-        function (err) { req.renderData.error = err; res.render('welcome.html', req.renderData); }
+        function(err) { req.renderData.error = err; res.render('welcome.html', req.renderData); }
     );
 });
 
@@ -214,7 +213,7 @@ app.post('/login', async (req, res) => {
                         "bio": userReg.bio,
                         "email": userReg.email,
                         "phone": userReg.phone,
-                        "phoneCarrier": userReg.phoneCarrierOther ? userReg.phoneCarrierOther : util.phoneCarriers[userReg.phoneCarrier],
+                        "phoneCarrier": userReg.phoneCarrierOther || util.phoneCarriers[userReg.phoneCarrier],
 						"contactPref": {
 							"email": userReg.contactEmail == "Yes" ? true : false,
 							"text": userReg.contactText == "Yes" ? true : false,
@@ -697,8 +696,16 @@ app.post("/submitChildForm", async (req, res) => {
 	let resJson = {};
 	let data = {};
 
-	let requiredFields = ["name", "birthdate", "docName", "docAddress", "docPhone"];
-	let listFields = ["medicalConditions", "medicine", "foodAllergies", "medicineAllergies", "otherAllergies"];
+	const requiredFields = ["name", "birthdate", "docName", "docAddress", "docPhone"];
+	const listFields = ["medicalConditions", "medicine", "foodAllergies", "medicineAllergies", "otherAllergies"];
+	
+	if(requiredFields.some(fName => Object.keys(req.body).includes(fName))) {
+		resJson = {success: false, error: "Required field is missing."};
+		return util.sendResponse(res, resJson);
+	}
+	
+	util.parseListFieldInput(req, data, listFields);
+	
     for (field in req.body) {
         //Check that all required fields have values
 		if(!(requiredFields.includes(field) && req.body[field])) {

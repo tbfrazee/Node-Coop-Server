@@ -1,4 +1,4 @@
- let db;
+let db;
 
 class CoopModel {
 

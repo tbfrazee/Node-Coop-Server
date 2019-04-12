@@ -2,11 +2,7 @@ var inputCt = [];
 
 function addListItem(inputName, minRequired) {
 
-	if(inputCt[inputName] == undefined) {
-		inputCt[inputName] = 1;
-	} else {
-		inputCt[inputName]++;
-	}
+	inputCt[inputName] = inputCt[inputName] ? ++inputCt[inputName] : 1;
 	
 	let div = document.createElement("div");
 	div.className = "row mt-2";
@@ -14,11 +10,11 @@ function addListItem(inputName, minRequired) {
 	for(i = 2; i < arguments.length; i++) {
 		let field = arguments[i].field.replace(/^\w/, c => c.toUpperCase());
 		let label = arguments[i].label;
-		let type = arguments[i].type == undefined ? "text" : arguments[i].type;
-		let width = arguments[i].width == undefined ? "" : "-" + arguments[i].width;
+		let type = arguments[i].type || "text";
+		let width = arguments[i].width ? ("-" + arguments[i].width) : "";
 		let pattern = arguments[i].pattern;
-		let placeholder = arguments[i].placeholder == undefined ? "" : arguments[i].placeholder;
-		let value = arguments[i].value == undefined ? "" : arguments[i].value;
+		let placeholder = arguments[i].placeholder || "";
+		let value = arguments[i].value || "";
 		
 		let col = document.createElement("div");
 		col.className = "col" + width;

@@ -9,7 +9,11 @@ const cols = [
 var rows = [];
 
 function getRequests(status, roles, on) {
-	let data = {status: status ? status : "open", roles: roles ? roles : "requested", on: on ? on : "user"};
+	let data = {
+		status: status || "open",
+		roles: roles || "requested",
+		on: on || "user"
+	};
 	clearRows();
 	makeLoadingRow();
 	
